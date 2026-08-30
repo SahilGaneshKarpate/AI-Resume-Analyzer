@@ -4,13 +4,13 @@ import joblib
 import streamlit as st
 import plotly.graph_objects as go
 
-from modules.resume_parser import extract_text_from_pdf
-from modules.skill_extractor import extract_skills
-from modules.ats_score import calculate_ats_score, get_score_label
-from modules.missing_skills import find_missing_skills
-from modules.job_recommender import recommend_jobs
-from modules.suggestions import generate_suggestions
-from modules.pdf_report import create_pdf_report
+from resume_parser import extract_text_from_pdf
+from skill_extractor import extract_skills
+from ats_score import calculate_ats_score, get_score_label
+from missing_skills import find_missing_skills
+from job_recommender import recommend_jobs
+from suggestions import generate_suggestions
+from pdf_report import create_pdf_report
 
 
 # =========================================================
