@@ -4,13 +4,13 @@ import joblib
 import streamlit as st
 import plotly.graph_objects as go
 
-from resume_parser import extract_text_from_pdf
-from skill_extractor import extract_skills
-from ats_score import calculate_ats_score, get_score_label
-from missing_skills import find_missing_skills
-from job_recommender import recommend_jobs
-from suggestions import generate_suggestions
-from pdf_report import create_pdf_report
+from modules.resume_parser import extract_text_from_pdf
+from modules.skill_extractor import extract_skills
+from modules.ats_score import calculate_ats_score, get_score_label
+from modules.missing_skills import find_missing_skills
+from modules.job_recommender import recommend_jobs
+from modules.suggestions import generate_suggestions
+from modules.pdf_report import create_pdf_report
 
 
 # =========================================================
@@ -53,7 +53,6 @@ ml_model_loaded = False
 model_error = ""
 
 try:
-
     if not os.path.isfile(MODEL_PATH):
         raise FileNotFoundError(
             "job_role_model.pkl not found in models folder."
@@ -65,13 +64,11 @@ try:
         )
 
     job_role_model = joblib.load(MODEL_PATH)
-
     tfidf_vectorizer = joblib.load(VECTORIZER_PATH)
 
     ml_model_loaded = True
 
 except Exception as error:
-
     model_error = str(error)
 
 
@@ -97,8 +94,6 @@ st.markdown(
         background-color: #172033;
     }
 
-    /* SIDEBAR */
-
     section[data-testid="stSidebar"] {
         background-color: #202D44;
         border-right: 1px solid #3E506A;
@@ -112,12 +107,9 @@ st.markdown(
         color: #B8C4D6 !important;
     }
 
-    /* HEADINGS */
-
     h1 {
         color: #FFFFFF !important;
         font-weight: 750 !important;
-        letter-spacing: -0.5px;
     }
 
     h2 {
@@ -129,8 +121,6 @@ st.markdown(
         color: #E8EEF7 !important;
         font-weight: 650 !important;
     }
-
-    /* TEXT */
 
     p {
         color: #D5DEEA !important;
@@ -144,14 +134,11 @@ st.markdown(
         color: #B8C4D6 !important;
     }
 
-    /* METRICS */
-
     div[data-testid="stMetric"] {
         background-color: #26354D;
         padding: 18px;
         border-radius: 14px;
         border: 1px solid #40536F;
-        box-shadow: 0 4px 14px rgba(0,0,0,0.20);
     }
 
     div[data-testid="stMetricLabel"] {
@@ -163,14 +150,11 @@ st.markdown(
         font-weight: 700 !important;
     }
 
-    /* FILE UPLOADER */
-
     div[data-testid="stFileUploader"] {
         background-color: #26354D;
         padding: 18px;
         border-radius: 16px;
         border: 1px solid #526783;
-        box-shadow: 0 5px 18px rgba(0,0,0,0.20);
     }
 
     section[data-testid="stFileUploaderDropzone"] {
@@ -212,8 +196,6 @@ st.markdown(
         color: #FFFFFF !important;
     }
 
-    /* BUTTONS */
-
     .stButton > button {
         background-color: #334E6F !important;
         color: #FFFFFF !important;
@@ -236,13 +218,6 @@ st.markdown(
         font-weight: 700 !important;
     }
 
-    .stButton > button[kind="primary"]:hover {
-        background-color: #527AA3 !important;
-        color: #FFFFFF !important;
-    }
-
-    /* DOWNLOAD */
-
     .stDownloadButton > button {
         background-color: #334E6F !important;
         color: #FFFFFF !important;
@@ -258,16 +233,11 @@ st.markdown(
         border-color: #7293B7 !important;
     }
 
-    /* CONTAINERS */
-
     div[data-testid="stVerticalBlockBorderWrapper"] {
         background-color: #26354D !important;
         border-radius: 14px !important;
         border: 1px solid #40536F !important;
-        box-shadow: 0 4px 14px rgba(0,0,0,0.18);
     }
-
-    /* EXPANDERS */
 
     div[data-testid="stExpander"] {
         background-color: #26354D !important;
@@ -275,15 +245,9 @@ st.markdown(
         border-radius: 12px !important;
     }
 
-    div[data-testid="stExpander"] summary {
-        color: #FFFFFF !important;
-    }
-
     div[data-testid="stExpander"] * {
         color: #E8EEF7;
     }
-
-    /* TEXTAREA */
 
     textarea {
         background-color: #202D44 !important;
@@ -292,47 +256,15 @@ st.markdown(
         border-radius: 10px !important;
     }
 
-    textarea:focus {
-        border-color: #7293B7 !important;
-    }
-
-    /* INPUT */
-
     input {
         background-color: #26354D !important;
         color: #FFFFFF !important;
         border: 1px solid #526783 !important;
     }
 
-    /* ALERTS */
-
-    div[data-testid="stAlert"] {
-        border-radius: 10px !important;
-    }
-
-    div[data-testid="stAlert"][kind="success"] {
-        background-color: #243D36 !important;
-    }
-
-    div[data-testid="stAlert"][kind="warning"] {
-        background-color: #4A3D25 !important;
-    }
-
-    div[data-testid="stAlert"][kind="info"] {
-        background-color: #263D58 !important;
-    }
-
-    div[data-testid="stAlert"][kind="error"] {
-        background-color: #492D35 !important;
-    }
-
-    /* LINES */
-
     hr {
         border-color: #3E506A !important;
     }
-
-    /* UPLOAD TITLE */
 
     .upload-title {
         background-color: #26354D;
@@ -351,8 +283,6 @@ st.markdown(
         margin-bottom: 0;
         color: #BFCBDD !important;
     }
-
-    /* FOOTER */
 
     .footer {
         text-align: center;
@@ -443,7 +373,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-
 uploaded_file = st.file_uploader(
     "Choose Resume PDF",
     type=["pdf"],
@@ -485,10 +414,6 @@ if uploaded_file is not None:
                 "Analyzing resume using AI, ML and NLP..."
             ):
 
-                # -------------------------------------------------
-                # Upload folder
-                # -------------------------------------------------
-
                 upload_folder = os.path.join(
                     BASE_DIR,
                     "uploads"
@@ -498,10 +423,6 @@ if uploaded_file is not None:
                     upload_folder,
                     exist_ok=True
                 )
-
-                # -------------------------------------------------
-                # Save uploaded resume
-                # -------------------------------------------------
 
                 extension = os.path.splitext(
                     uploaded_file.name
@@ -526,10 +447,6 @@ if uploaded_file is not None:
                         uploaded_file.getbuffer()
                     )
 
-                # -------------------------------------------------
-                # Extract text
-                # -------------------------------------------------
-
                 resume_text = extract_text_from_pdf(
                     uploaded_file
                 )
@@ -539,10 +456,6 @@ if uploaded_file is not None:
                         "Could not extract text from PDF."
                     )
                     st.stop()
-
-                # -------------------------------------------------
-                # ML Job Role Prediction
-                # -------------------------------------------------
 
                 predicted_job_role = "Not Available"
                 prediction_confidence = None
@@ -576,17 +489,9 @@ if uploaded_file is not None:
                             max(probabilities) * 100
                         )
 
-                # -------------------------------------------------
-                # NLP Skill Extraction
-                # -------------------------------------------------
-
                 skills = extract_skills(
                     resume_text
                 )
-
-                # -------------------------------------------------
-                # ATS Score
-                # -------------------------------------------------
 
                 ats_score = calculate_ats_score(
                     resume_text,
@@ -597,25 +502,13 @@ if uploaded_file is not None:
                     ats_score
                 )
 
-                # -------------------------------------------------
-                # Missing Skills
-                # -------------------------------------------------
-
                 missing_skills = find_missing_skills(
                     skills
                 )
 
-                # -------------------------------------------------
-                # Job Recommendation
-                # -------------------------------------------------
-
                 jobs = recommend_jobs(
                     skills
                 )
-
-                # -------------------------------------------------
-                # Resume Suggestions
-                # -------------------------------------------------
 
                 suggestions = generate_suggestions(
                     resume_text,
@@ -624,34 +517,15 @@ if uploaded_file is not None:
                     ats_score
                 )
 
-                # -------------------------------------------------
-                # Save results
-                # -------------------------------------------------
-
                 st.session_state.resume_text = resume_text
-
-                st.session_state.predicted_job_role = (
-                    predicted_job_role
-                )
-
-                st.session_state.prediction_confidence = (
-                    prediction_confidence
-                )
-
+                st.session_state.predicted_job_role = predicted_job_role
+                st.session_state.prediction_confidence = prediction_confidence
                 st.session_state.skills = skills
-
                 st.session_state.ats_score = ats_score
-
                 st.session_state.score_label = score_label
-
-                st.session_state.missing_skills = (
-                    missing_skills
-                )
-
+                st.session_state.missing_skills = missing_skills
                 st.session_state.jobs = jobs
-
                 st.session_state.suggestions = suggestions
-
                 st.session_state.analysis_done = True
 
             st.success(
@@ -672,27 +546,13 @@ if uploaded_file is not None:
 if st.session_state.analysis_done:
 
     resume_text = st.session_state.resume_text
-
-    predicted_job_role = (
-        st.session_state.predicted_job_role
-    )
-
-    prediction_confidence = (
-        st.session_state.prediction_confidence
-    )
-
+    predicted_job_role = st.session_state.predicted_job_role
+    prediction_confidence = st.session_state.prediction_confidence
     skills = st.session_state.skills
-
     ats_score = st.session_state.ats_score
-
     score_label = st.session_state.score_label
-
-    missing_skills = (
-        st.session_state.missing_skills
-    )
-
+    missing_skills = st.session_state.missing_skills
     jobs = st.session_state.jobs
-
     suggestions = st.session_state.suggestions
 
 
@@ -704,9 +564,7 @@ if st.session_state.analysis_done:
 
     st.header("📊 Resume Dashboard")
 
-    word_count = len(
-        resume_text.split()
-    )
+    word_count = len(resume_text.split())
 
     skill_match = min(
         len(skills) * 8,
@@ -722,7 +580,6 @@ if st.session_state.analysis_done:
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-
         st.metric(
             "🎯 ATS Score",
             f"{ats_score}/100",
@@ -730,21 +587,18 @@ if st.session_state.analysis_done:
         )
 
     with col2:
-
         st.metric(
             "🧠 Skill Match",
             f"{skill_match}%"
         )
 
     with col3:
-
         st.metric(
             "💼 Top Job Match",
             f"{top_job_match}%"
         )
 
     with col4:
-
         st.metric(
             "📝 Word Count",
             word_count
@@ -769,9 +623,7 @@ if st.session_state.analysis_done:
 
         with col1:
 
-            st.subheader(
-                "🎯 Predicted Job Role"
-            )
+            st.subheader("🎯 Predicted Job Role")
 
             st.info(
                 f"**{predicted_job_role}**"
@@ -781,9 +633,7 @@ if st.session_state.analysis_done:
 
             if prediction_confidence is not None:
 
-                st.subheader(
-                    "📊 Prediction Confidence"
-                )
+                st.subheader("📊 Prediction Confidence")
 
                 st.metric(
                     "Confidence",
@@ -833,21 +683,7 @@ if st.session_state.analysis_done:
                         "color": "#8AA6C5"
                     },
                     "bgcolor": "#26354D",
-                    "bordercolor": "#526783",
-                    "steps": [
-                        {
-                            "range": [0, 50],
-                            "color": "#39475B"
-                        },
-                        {
-                            "range": [50, 75],
-                            "color": "#52627A"
-                        },
-                        {
-                            "range": [75, 100],
-                            "color": "#6D829E"
-                        }
-                    ]
+                    "bordercolor": "#526783"
                 }
             )
         )
@@ -874,9 +710,7 @@ if st.session_state.analysis_done:
 
     with col2:
 
-        st.subheader(
-            "📋 Score Interpretation"
-        )
+        st.subheader("📋 Score Interpretation")
 
         if ats_score >= 80:
 
@@ -1062,28 +896,18 @@ if st.session_state.analysis_done:
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
-
-        st.metric(
-            "Words",
-            word_count
-        )
+        st.metric("Words", word_count)
 
     with col2:
-
-        st.metric(
-            "Skills",
-            len(skills)
-        )
+        st.metric("Skills", len(skills))
 
     with col3:
-
         st.metric(
             "Missing Skills",
             len(missing_skills)
         )
 
     with col4:
-
         st.metric(
             "Job Roles",
             len(jobs)
@@ -1098,9 +922,7 @@ if st.session_state.analysis_done:
 
     st.header("🔍 Extracted Resume Text")
 
-    with st.expander(
-        "View Resume Content"
-    ):
+    with st.expander("View Resume Content"):
 
         st.text_area(
             "Resume Text",
@@ -1124,23 +946,12 @@ if st.session_state.analysis_done:
             "reports"
         )
 
-        if os.path.exists(report_folder):
-
-            if not os.path.isdir(report_folder):
-
-                report_folder = os.path.join(
-                    BASE_DIR,
-                    "generated_reports"
-                )
-
         os.makedirs(
             report_folder,
             exist_ok=True
         )
 
-        pdf_filename = (
-            "AI_Resume_Analysis_Report.pdf"
-        )
+        pdf_filename = "AI_Resume_Analysis_Report.pdf"
 
         pdf_path = os.path.join(
             report_folder,
